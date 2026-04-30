@@ -1,0 +1,10 @@
+ini adalah file eksternal
+ini baris kedua dari file ini
+
+data
+no   nama
+1    Faqihza
+2    Muklhis
+3    Ucup
+4    Mario
+5    Sandra
