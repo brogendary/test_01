@@ -3,10 +3,10 @@
 #include <fstream>
 #include <limits>
 
-namespace crud 
+namespace crud
 {
-    
-        struct Mahasiswa
+
+    struct Mahasiswa
     {
         int pk;
         char NIM[20];
@@ -14,12 +14,10 @@ namespace crud
         char jurusan[50];
     };
 
-
-
     void writeData(std::fstream &data, int posisi, Mahasiswa &inputMahasiswa)
     {
-        data.seekp((posisi - 1)*sizeof(Mahasiswa), std::ios::beg);
-        data.write(reinterpret_cast<char*>(&inputMahasiswa),sizeof(Mahasiswa));
+        data.seekp((posisi - 1) * sizeof(Mahasiswa), std::ios::beg);
+        data.write(reinterpret_cast<char *>(&inputMahasiswa), sizeof(Mahasiswa));
     };
 
     int getDataSize(std::fstream &data)
@@ -29,14 +27,14 @@ namespace crud
         start = data.tellg();
         data.seekg(0, std::ios::end);
         end = data.tellg();
-        return (end-start)/sizeof(Mahasiswa);
+        return (end - start) / sizeof(Mahasiswa);
     };
 
     Mahasiswa readData(std::fstream &data, int posisi)
-    {   
+    {
         Mahasiswa readMahasiswa;
-        data.seekg((posisi - 1)*sizeof(Mahasiswa), std::ios::beg);
-        data.read(reinterpret_cast<char*>(&readMahasiswa), sizeof(Mahasiswa));
+        data.seekg((posisi - 1) * sizeof(Mahasiswa), std::ios::beg);
+        data.read(reinterpret_cast<char *>(&readMahasiswa), sizeof(Mahasiswa));
         return readMahasiswa;
     }
 
@@ -47,19 +45,19 @@ namespace crud
         int size = getDataSize(data);
         std::cout << "ukuran data: " << size << std::endl;
 
-        if(size == 0)
+        if (size == 0)
         {
             inputMahasiswa.pk = 1;
         }
         else
         {
             lastMahasiswa = readData(data, size);
-            std::cout << "pk =" <<  lastMahasiswa.pk << std::endl;
+            std::cout << "pk =" << lastMahasiswa.pk << std::endl;
             inputMahasiswa.pk = lastMahasiswa.pk + 1;
         }
 
-    // readData(data, size);
-        
+        // readData(data, size);
+
         inputMahasiswa.pk = 1;
         std::cout << "Nama: ";
         std::cin.getline(inputMahasiswa.nama, 50);
@@ -68,8 +66,7 @@ namespace crud
         std::cout << "NIM: ";
         std::cin.getline(inputMahasiswa.NIM, 20);
 
-        writeData(data, size+1, inputMahasiswa);
-
+        writeData(data, size + 1, inputMahasiswa);
     };
 
     void displayDataMahasiswa(std::fstream &data)
@@ -94,7 +91,7 @@ namespace crud
         Mahasiswa updateMahasiswa;
         std::cout << "pilih nomor: ";
         std::cin >> nomor;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         updateMahasiswa = readData(data, nomor);
         std::cout << "\n\npilihan data: " << std::endl;
@@ -111,13 +108,12 @@ namespace crud
         std::cin.getline(updateMahasiswa.NIM, 20);
 
         writeData(data, nomor, updateMahasiswa);
-
     };
 
     void deleteRecord(std::fstream &data)
     {
         int nomor, size, offset;
-        Mahasiswa blankMahasiswa, tempMahasiswa;   
+        Mahasiswa blankMahasiswa, tempMahasiswa;
         std::fstream dataSementara;
         size = getDataSize(data);
 
@@ -133,7 +129,7 @@ namespace crud
         {
             tempMahasiswa = readData(data, i);
 
-            if(tempMahasiswa.nama[0] != '\0')
+            if (tempMahasiswa.nama[0] != '\0')
             {
                 writeData(dataSementara, i - offset, tempMahasiswa);
             }
@@ -150,19 +146,17 @@ namespace crud
         data.close();
         data.open("data.bin", std::ios::out | std::ios::in | std::ios::binary);
 
-        for(int i = 1; i <= size; i++)
+        for (int i = 1; i <= size; i++)
         {
             tempMahasiswa = readData(dataSementara, i);
             writeData(data, i, tempMahasiswa);
         }
-
-
     };
 
     void checkDatabase(std::fstream &data)
     {
         data.open("data.bin", std::ios::out | std::ios::in | std::ios::binary);
-        
+
         if (data.is_open())
         {
             std::cout << "[--database ditemukan--]" << std::endl;
@@ -178,10 +172,10 @@ namespace crud
     int getOption()
     {
         int input;
-    //    system("cls");
+        //    system("cls");
         std::cout << "\n===Program CRUD Data Mahasiswa===" << std::endl;
         std::cout << "=================================" << std::endl;
-        
+
         std::cout << "1. Tambah data Mahasiswa" << std::endl;
         std::cout << "2. Tampilkan data Mahasiswa" << std::endl;
         std::cout << "3. Ubah data Mahasiswa" << std::endl;
@@ -191,10 +185,8 @@ namespace crud
         std::cout << "pilih [1-5]? : ";
 
         std::cin >> input;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         return input;
     }
 
-
 }
-
